@@ -1,7 +1,10 @@
 ﻿using Attendance.API.Context;
 using Attendance.API.Models;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -18,9 +21,12 @@ namespace Attendance.API.Controllers
         }
         // GET: api/<EmployeeAttendanceController>
         [HttpGet]
-        public IEnumerable<EmployeeAttendance> Get()
+        public IEnumerable<EmployeeAttendance> Get(string createDate)
         {
-            return _db.EmployeeAttendances;
+              DateTime cdate = DateTime.ParseExact(createDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+              var filteredData = _db.EmployeeAttendances.ToList().Where(a => a.CreateDateTime.ToShortDateString() == cdate.ToShortDateString());
+              return filteredData;
+            
         }
 
        
@@ -29,6 +35,7 @@ namespace Attendance.API.Controllers
         [HttpPost]
         public void Post([FromBody] EmployeeAttendance value)
         {
+            value.CreateDateTime = DateTime.Now;
             _db.EmployeeAttendances.Add(value);
             _db.SaveChanges();
         }

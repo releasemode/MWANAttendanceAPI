@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Attendance.API.Models
@@ -15,7 +16,7 @@ namespace Attendance.API.Models
         public string ContractType { get; set; }
         public string Latitude { get; set; }
         public string Longitude { get; set; }
-        public string CreateDateTime { get; set; }
+        public DateTime CreateDateTime { get; set; }
 
     }
 }

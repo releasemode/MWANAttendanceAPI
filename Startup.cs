@@ -36,7 +36,7 @@ namespace Attendance.API
             services.AddDbContext<AttendanceContext>(options =>
                options.UseSqlServer(
                    Configuration.GetConnectionString("DefaultConnection")));
-            string corsDomain = "http://localhost:4200";
+            string corsDomain = "http://localhost:4200,https://attendance-mwanad.web.app";
             string[] domains = corsDomain.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
             services.AddCors(o => o.AddPolicy("AppCORSPolicy", builder =>
             {

@@ -1,5 +1,6 @@
 ﻿using Attendance.API.Context;
 using Attendance.API.Models;
+using Attendance.API.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -21,11 +22,38 @@ namespace Attendance.API.Controllers
         }
         // GET: api/<EmployeeAttendanceController>
         [HttpGet]
-        public IEnumerable<EmployeeAttendance> Get(string createDate)
+        public IEnumerable<EntryExitModel> Get(string createDate)
         {
-              DateTime cdate = DateTime.ParseExact(createDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-              var filteredData = _db.EmployeeAttendances.ToList().Where(a => a.CreateDateTime.ToShortDateString() == cdate.ToShortDateString());
-              return filteredData;
+            List<EntryExitModel> attendanceList = new List<EntryExitModel>();
+            try
+            {
+                DateTime cdate = DateTime.ParseExact(createDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                //var filteredData = _db.EmployeeAttendances.ToList().Where(a => a.CreateDateTime.ToShortDateString() == cdate.ToShortDateString());
+
+                var resultSum = from row in _db.EmployeeAttendances.AsEnumerable()
+                                group row by row.Name into grp
+                                select new
+                                {
+                                    Group1 = grp.Where(y => y.RegistrationType == "Entry").Where(c => c.CreateDateTime.ToShortDateString() == cdate.ToShortDateString()).FirstOrDefault(),
+                                    Group2 = grp.Where(y => y.RegistrationType == "Exit").Where(c => c.CreateDateTime.ToShortDateString() == cdate.ToShortDateString()).LastOrDefault(),
+
+                                };
+
+                foreach (var rn1 in resultSum)
+                {
+                    EntryExitModel model = new EntryExitModel();
+                    model.Name = rn1.Group1.Name !=null? rn1.Group1.Name : rn1.Group2.Name;
+                    model.Department = rn1.Group1.Department != null ? rn1.Group1.Department : rn1.Group2.Department;
+                    model.EntryTime = rn1.Group1 != null ? rn1.Group1.CreateDateTime : null;
+                    model.ExitTime = rn1.Group2 != null ? rn1.Group2.CreateDateTime : null;
+                    attendanceList.Add(model);
+                }
+                return attendanceList;
+            }
+            catch (Exception ex)
+            {
+                return attendanceList;
+            }
             
         }
 

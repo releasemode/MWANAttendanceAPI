@@ -34,19 +34,26 @@ namespace Attendance.API.Controllers
                                 group row by row.Name into grp
                                 select new
                                 {
-                                    Group1 = grp.Where(y => y.RegistrationType == "Entry").Where(c => c.CreateDateTime.ToShortDateString() == cdate.ToShortDateString()).FirstOrDefault(),
-                                    Group2 = grp.Where(y => y.RegistrationType == "Exit").Where(c => c.CreateDateTime.ToShortDateString() == cdate.ToShortDateString()).LastOrDefault(),
+                                    Group1 = grp.Where(y => y.RegistrationType == "لدخول").Where(c => c.CreateDateTime.ToShortDateString() == cdate.ToShortDateString()).FirstOrDefault(),
+                                    Group2 = grp.Where(y => y.RegistrationType == "الخروج").Where(c => c.CreateDateTime.ToShortDateString() == cdate.ToShortDateString()).LastOrDefault(),
 
                                 };
 
                 foreach (var rn1 in resultSum)
                 {
-                    EntryExitModel model = new EntryExitModel();
-                    model.Name = rn1.Group1.Name !=null? rn1.Group1.Name : rn1.Group2.Name;
-                    model.Department = rn1.Group1.Department != null ? rn1.Group1.Department : rn1.Group2.Department;
-                    model.EntryTime = rn1.Group1 != null ? rn1.Group1.CreateDateTime : null;
-                    model.ExitTime = rn1.Group2 != null ? rn1.Group2.CreateDateTime : null;
-                    attendanceList.Add(model);
+                    try
+                    {
+                        EntryExitModel model = new EntryExitModel();
+                        model.Name = rn1.Group1.Name != null ? rn1.Group1.Name : rn1.Group2.Name;
+                        model.Department = rn1.Group1.Department != null ? rn1.Group1.Department : rn1.Group2.Department;
+                        model.EntryTime = rn1.Group1 != null ? rn1.Group1.CreateDateTime : null;
+                        model.ExitTime = rn1.Group2 != null ? rn1.Group2.CreateDateTime : null;
+                        attendanceList.Add(model);
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
                 }
                 return attendanceList;
             }
@@ -63,7 +70,8 @@ namespace Attendance.API.Controllers
         [HttpPost]
         public void Post([FromBody] EmployeeAttendance value)
         {
-            value.CreateDateTime = DateTime.Now;
+           // value.CreateDateTime = DateTime.Now.AddHours(10);
+            //value.CreateDateTime = DateTime.Now;
             _db.EmployeeAttendances.Add(value);
             _db.SaveChanges();
         }

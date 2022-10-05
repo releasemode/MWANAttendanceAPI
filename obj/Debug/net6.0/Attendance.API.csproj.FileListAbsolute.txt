@@ -18,7 +18,6 @@ C:\Users\ahame\source\repos\Attendance.API\bin\Debug\net6.0\Microsoft.IdentityMo
 C:\Users\ahame\source\repos\Attendance.API\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 C:\Users\ahame\source\repos\Attendance.API\bin\Debug\net6.0\Microsoft.IdentityModel.Tokens.dll
 C:\Users\ahame\source\repos\Attendance.API\bin\Debug\net6.0\System.IdentityModel.Tokens.Jwt.dll
-C:\Users\ahame\source\repos\Attendance.API\obj\Debug\net6.0\Attendance.API.csproj.AssemblyReference.cache
 C:\Users\ahame\source\repos\Attendance.API\obj\Debug\net6.0\Attendance.API.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\ahame\source\repos\Attendance.API\obj\Debug\net6.0\Attendance.API.AssemblyInfoInputs.cache
 C:\Users\ahame\source\repos\Attendance.API\obj\Debug\net6.0\Attendance.API.AssemblyInfo.cs

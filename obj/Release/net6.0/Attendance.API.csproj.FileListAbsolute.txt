@@ -59,3 +59,4 @@ C:\Users\ahame\source\repos\Attendance.API\obj\Release\net6.0\Attendance.API.dll
 C:\Users\ahame\source\repos\Attendance.API\obj\Release\net6.0\ref\Attendance.API.dll
 C:\Users\ahame\source\repos\Attendance.API\obj\Release\net6.0\Attendance.API.pdb
 C:\Users\ahame\source\repos\Attendance.API\obj\Release\net6.0\Attendance.API.genruntimeconfig.cache
+C:\Users\ahame\source\repos\Attendance.API\bin\Release\net6.0\Microsoft.IdentityModel.Abstractions.dll

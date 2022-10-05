@@ -15,6 +15,7 @@ C:\Users\ahame\source\repos\Attendance.API\obj\Release\net6.0\PubTmp\Out\Microso
 C:\Users\ahame\source\repos\Attendance.API\obj\Release\net6.0\PubTmp\Out\Microsoft.EntityFrameworkCore.SqlServer.dll
 C:\Users\ahame\source\repos\Attendance.API\obj\Release\net6.0\PubTmp\Out\Microsoft.Extensions.Caching.Memory.dll
 C:\Users\ahame\source\repos\Attendance.API\obj\Release\net6.0\PubTmp\Out\Microsoft.Identity.Client.dll
+C:\Users\ahame\source\repos\Attendance.API\obj\Release\net6.0\PubTmp\Out\Microsoft.IdentityModel.Abstractions.dll
 C:\Users\ahame\source\repos\Attendance.API\obj\Release\net6.0\PubTmp\Out\Microsoft.IdentityModel.JsonWebTokens.dll
 C:\Users\ahame\source\repos\Attendance.API\obj\Release\net6.0\PubTmp\Out\Microsoft.IdentityModel.Logging.dll
 C:\Users\ahame\source\repos\Attendance.API\obj\Release\net6.0\PubTmp\Out\Microsoft.IdentityModel.Protocols.dll

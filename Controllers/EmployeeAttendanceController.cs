@@ -28,34 +28,40 @@ namespace Attendance.API.Controllers
             try
             {
                 DateTime cdate = DateTime.ParseExact(createDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-                //var filteredData = _db.EmployeeAttendances.ToList().Where(a => a.CreateDateTime.ToShortDateString() == cdate.ToShortDateString());
+                
+                var list = _db.EmployeeAttendances.Where(a=>a.CreateDateTime >= cdate).Where(a => a.CreateDateTime <= cdate.AddDays(1)).AsEnumerable().GroupBy(x => new { x.Name, x.CreateDateTime.Date })
+                     .Select(x => new
+                     {
+                         Name = x.Key.Name,
 
-                var resultSum = from row in _db.EmployeeAttendances.AsEnumerable()
-                                group row by row.Name into grp
-                                select new
-                                {
-                                    Group1 = grp.Where(y => y.RegistrationType == "لدخول").Where(c => c.CreateDateTime.ToShortDateString() == cdate.ToShortDateString()).FirstOrDefault(),
-                                    Group2 = grp.Where(y => y.RegistrationType == "الخروج").Where(c => c.CreateDateTime.ToShortDateString() == cdate.ToShortDateString()).LastOrDefault(),
+                         Group1 = x.Where(y => y.RegistrationType == "لدخول").FirstOrDefault(),
+                         Group2 = x.Where(y => y.RegistrationType == "الخروج").LastOrDefault(),
+                         Group3 = x.Where(y => y.RegistrationType == "إستئذان").LastOrDefault(),
 
-                                };
+                     })
+                    .Select(x => new EntryExitModel
+                    {
+                        Name = x.Name,
+                        Department = x.Group1 == null ? x.Group2.Department : x.Group1.Department,
+                        EntryTime = x.Group1 == null ? null : x.Group1.CreateDateTime,
+                        ExitTime = x.Group2 == null ? null : x.Group2.CreateDateTime,
+                        EarlyExitTime = x.Group3 == null ? null : x.Group3.CreateDateTime,
+                    }).ToList();
 
-                foreach (var rn1 in resultSum)
+                foreach (var attendanceEntry in list)
                 {
-                    try
-                    {
-                        EntryExitModel model = new EntryExitModel();
-                        model.Name = rn1.Group1.Name != null ? rn1.Group1.Name : rn1.Group2.Name;
-                        model.Department = rn1.Group1.Department != null ? rn1.Group1.Department : rn1.Group2.Department;
-                        model.EntryTime = rn1.Group1 != null ? rn1.Group1.CreateDateTime : null;
-                        model.ExitTime = rn1.Group2 != null ? rn1.Group2.CreateDateTime : null;
-                        attendanceList.Add(model);
-                    }
-                    catch (Exception ex)
-                    {
-
-                    }
+                    EntryExitModel objList = new EntryExitModel();
+                    objList.Name = attendanceEntry.Name;
+                    objList.Department = attendanceEntry.Department;
+                    objList.EntryTime = attendanceEntry.EntryTime;
+                    objList.ExitTime = attendanceEntry.ExitTime;
+                    objList.EarlyExitTime = attendanceEntry.EarlyExitTime;
+                    attendanceList.Add(objList);
                 }
+               
                 return attendanceList;
+
+
             }
             catch (Exception ex)
             {
@@ -65,13 +71,63 @@ namespace Attendance.API.Controllers
         }
 
        
+        [HttpGet]
+        [Route("AttendanceStatus")]
+        public IEnumerable<EntryExitModel> AttendanceStatus(string name)
+        {
+            List<EntryExitModel> attendanceStatusList = new List<EntryExitModel>();
+            try
+            {
+                //DateTime cdate = DateTime.ParseExact(createDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+
+                var list = _db.EmployeeAttendances
+                              .Where(a => a.CreateDateTime >= DateTime.Today)
+                              .Where(a => a.CreateDateTime <= DateTime.Today.AddDays(1))
+                              .Where(a=>a.Name == name)
+                              .AsEnumerable().GroupBy(x => new { x.Name, x.CreateDateTime.Date })
+                     .Select(x => new
+                     {
+                         Name = x.Key.Name,
+
+                         Group1 = x.Where(y => y.RegistrationType == "لدخول").FirstOrDefault(),
+                         Group2 = x.Where(y => y.RegistrationType == "الخروج").LastOrDefault(),
+                         Group3 = x.Where(y => y.RegistrationType == "إستئذان").LastOrDefault(),
+
+                     })
+                    .Select(x => new EntryExitModel
+                    {
+                        Name = x.Name,
+                        EntryTime = x.Group1 == null ? null : x.Group1.CreateDateTime,
+                        ExitTime = x.Group2 == null ? null : x.Group2.CreateDateTime,
+                        EarlyExitTime = x.Group3 == null ? null : x.Group3.CreateDateTime,
+                    }).ToList();
+
+                foreach (var attendanceEntry in list)
+                {
+                    EntryExitModel objList = new EntryExitModel();
+                    objList.Name = attendanceEntry.Name;
+                    objList.EntryTime = attendanceEntry.EntryTime;
+                    objList.ExitTime = attendanceEntry.ExitTime;
+                    objList.EarlyExitTime = attendanceEntry.EarlyExitTime;
+                    attendanceStatusList.Add(objList);
+                }
+
+                return attendanceStatusList;
+
+
+            }
+            catch (Exception ex)
+            {
+                return attendanceStatusList;
+            }
+        }
+
+    
 
         // POST api/<EmployeeAttendanceController>
         [HttpPost]
         public void Post([FromBody] EmployeeAttendance value)
         {
-           // value.CreateDateTime = DateTime.Now.AddHours(10);
-            //value.CreateDateTime = DateTime.Now;
             _db.EmployeeAttendances.Add(value);
             _db.SaveChanges();
         }

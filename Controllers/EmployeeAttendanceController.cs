@@ -29,7 +29,10 @@ namespace Attendance.API.Controllers
             {
                 DateTime cdate = DateTime.ParseExact(createDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
                 
-                var list = _db.EmployeeAttendances.Where(a=>a.CreateDateTime >= cdate).Where(a => a.CreateDateTime <= cdate.AddDays(1)).AsEnumerable().GroupBy(x => new { x.Name, x.CreateDateTime.Date })
+                var list = _db.EmployeeAttendances
+                              .Where(a=>a.CreateDateTime >= cdate)
+                              .Where(a => a.CreateDateTime <= cdate.AddDays(1)).AsEnumerable()
+                              .GroupBy(x => new { x.Name, x.CreateDateTime.Date })
                      .Select(x => new
                      {
                          Name = x.Key.Name,
@@ -73,22 +76,21 @@ namespace Attendance.API.Controllers
        
         [HttpGet]
         [Route("AttendanceStatus")]
-        public IEnumerable<EntryExitModel> AttendanceStatus(string name)
+        public IEnumerable<EntryExitModel> AttendanceStatus(string name, string createDate)
         {
             List<EntryExitModel> attendanceStatusList = new List<EntryExitModel>();
             try
             {
-                //DateTime cdate = DateTime.ParseExact(createDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                DateTime cdate = DateTime.ParseExact(createDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
 
                 var list = _db.EmployeeAttendances
-                              .Where(a => a.CreateDateTime >= DateTime.Today)
-                              .Where(a => a.CreateDateTime <= DateTime.Today.AddDays(1))
+                              .Where(a => a.CreateDateTime >= cdate)
+                              .Where(a => a.CreateDateTime <= cdate.AddDays(1))
                               .Where(a=>a.Name == name)
                               .AsEnumerable().GroupBy(x => new { x.Name, x.CreateDateTime.Date })
                      .Select(x => new
                      {
                          Name = x.Key.Name,
-
                          Group1 = x.Where(y => y.RegistrationType == "لدخول").FirstOrDefault(),
                          Group2 = x.Where(y => y.RegistrationType == "الخروج").LastOrDefault(),
                          Group3 = x.Where(y => y.RegistrationType == "إستئذان").LastOrDefault(),
